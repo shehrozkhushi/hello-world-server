@@ -7,29 +7,77 @@
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
+  :root {
+    --bg: #0f0f12;
+    --text: #eee;
+    --text-muted: #ccc;
+    --header-grad-1: #1a1a2e;
+    --header-grad-2: #16213e;
+    --accent: #ff4757;
+    --card-bg: #1a1a1f;
+    --card-shadow: rgba(0,0,0,0.4);
+    --footer-bg: #16213e;
+    --footer-text: #888;
+  }
+
+  [data-theme="light"] {
+    --bg: #f4f4f7;
+    --text: #1a1a1f;
+    --text-muted: #444;
+    --header-grad-1: #dfe6f7;
+    --header-grad-2: #c9d6ef;
+    --accent: #e0324a;
+    --card-bg: #ffffff;
+    --card-shadow: rgba(0,0,0,0.12);
+    --footer-bg: #dfe6f7;
+    --footer-text: #555;
+  }
+
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
-    background: #0f0f12;
-    color: #eee;
+    background: var(--bg);
+    color: var(--text);
     line-height: 1.6;
+    transition: background 0.3s ease, color 0.3s ease;
   }
 
   header {
+    position: relative;
     text-align: center;
     padding: 60px 20px;
-    background: linear-gradient(135deg, #1a1a2e, #16213e);
+    background: linear-gradient(135deg, var(--header-grad-1), var(--header-grad-2));
+    transition: background 0.3s ease;
   }
 
   header h1 {
     font-size: 3rem;
     letter-spacing: 2px;
-    color: #ff4757;
+    color: var(--accent);
   }
 
   header p {
     margin-top: 10px;
     font-size: 1.2rem;
-    color: #ccc;
+    color: var(--text-muted);
+  }
+
+  #theme-toggle {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: var(--card-bg);
+    color: var(--text);
+    border: 2px solid var(--accent);
+    border-radius: 30px;
+    padding: 8px 16px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  #theme-toggle:hover {
+    background: var(--accent);
+    color: #fff;
   }
 
   main {
@@ -42,11 +90,12 @@
     display: flex;
     align-items: center;
     gap: 40px;
-    background: #1a1a1f;
+    background: var(--card-bg);
     border-radius: 12px;
     overflow: hidden;
     margin-bottom: 40px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    box-shadow: 0 8px 20px var(--card-shadow);
+    transition: background 0.3s ease;
   }
 
   .car-card:nth-child(even) {
@@ -64,21 +113,22 @@
   }
 
   .car-info h2 {
-    color: #ff4757;
+    color: var(--accent);
     margin-bottom: 10px;
     font-size: 1.8rem;
   }
 
   .car-info p {
-    color: #ccc;
+    color: var(--text-muted);
     font-size: 1rem;
   }
 
   footer {
     text-align: center;
     padding: 30px;
-    background: #16213e;
-    color: #888;
+    background: var(--footer-bg);
+    color: var(--footer-text);
+    transition: background 0.3s ease, color 0.3s ease;
   }
 
   @media (max-width: 700px) {
@@ -88,12 +138,17 @@
     .car-card img {
       width: 100%;
     }
+    #theme-toggle {
+      position: static;
+      margin-top: 20px;
+    }
   }
 </style>
 </head>
 <body>
 
 <header>
+  <button id="theme-toggle">🌙 Dark Mode</button>
   <h1>About Cars</h1>
   <p>A short journey through speed, design, and engineering.</p>
 </header>
@@ -101,7 +156,7 @@
 <main>
 
   <section class="car-card">
-    <img src="public/images/car 1.jpg" alt="Car 1">
+    <img src="/images/car1.jpg" alt="Car 1">
     <div class="car-info">
       <h2>Classic Performance</h2>
       <p>Cars have always been more than machines — they represent freedom, craftsmanship, and the thrill of the open road. From the roar of the engine to the sleek curves of the body, every car tells a story of design and purpose.</p>
@@ -109,7 +164,7 @@
   </section>
 
   <section class="car-card">
-    <img src="public//images/car 2.avif" alt="Car 2">
+    <img src="/images/car2.avif" alt="Car 2">
     <div class="car-info">
       <h2>Modern Engineering</h2>
       <p>Today's cars blend cutting-edge technology with efficiency. Advanced safety systems, hybrid engines, and smart connectivity have transformed the way we drive, making every trip safer and smarter.</p>
@@ -117,7 +172,7 @@
   </section>
 
   <section class="car-card">
-    <img src="public/images/car 3.webp" alt="Car 3">
+    <img src="/images/car3.webp" alt="Car 3">
     <div class="car-info">
       <h2>The Future of Driving</h2>
       <p>Electric and autonomous vehicles are reshaping the automotive world. Sustainability meets innovation as cars evolve to be cleaner, quieter, and more intelligent than ever before.</p>
@@ -129,6 +184,30 @@
 <footer>
   <p>&copy; 2026 About Cars. All rights reserved.</p>
 </footer>
+
+<script>
+  const toggleBtn = document.getElementById('theme-toggle');
+  const root = document.documentElement;
+
+  function applyTheme(theme) {
+    if (theme === 'light') {
+      root.setAttribute('data-theme', 'light');
+      toggleBtn.textContent = '☀️ Light Mode';
+    } else {
+      root.removeAttribute('data-theme');
+      toggleBtn.textContent = '🌙 Dark Mode';
+    }
+    localStorage.setItem('theme', theme);
+  }
+
+  const savedTheme = localStorage.getItem('theme') || 'dark';
+  applyTheme(savedTheme);
+
+  toggleBtn.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
+    applyTheme(current === 'light' ? 'dark' : 'light');
+  });
+</script>
 
 </body>
 </html>
